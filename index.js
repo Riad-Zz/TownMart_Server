@@ -64,6 +64,21 @@ async function run() {
         res.send(result) ;
     })
 
+    //---------------------------Simple Api to get All Product--------------------------
+    app.get('/product',async (req,res)=>{
+        const cursor = townMartProductCollction.find() ;
+        const result = await cursor.toArray() ;
+        res.send(result) ;
+    })
+
+    //---------------------------Simple APi to get Single Product By ID--------------------
+    app.get('/product/:id',async(req,res)=>{
+        const userId = req.params.id ;
+        const query = {_id : new ObjectId(userId)} ;
+        const result = await townMartProductCollction.findOne(query) ;
+        res.send(result) ;
+    })
+
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
