@@ -35,6 +35,10 @@ async function run() {
     
     const dataBase = client.db("TownMart") ;
     const townMartProductCollction = dataBase.collection("product") ;
+    const bidsCollection = dataBase.collection("bids") ;
+
+
+    //****************************** Product Related APis **********************************************/
 
     //-------------------------Simple Post api to add Product-------------------------
     app.post('/product', async (req,res)=>{
@@ -66,7 +70,12 @@ async function run() {
 
     //---------------------------Simple Api to get All Product--------------------------
     app.get('/product',async (req,res)=>{
-        const cursor = townMartProductCollction.find() ;
+        const email = req.query.email ;
+        const query = {} ;
+        if(email){
+            query.email = email ;
+        }
+        const cursor = townMartProductCollction.find(query) ;
         const result = await cursor.toArray() ;
         res.send(result) ;
     })
@@ -76,6 +85,44 @@ async function run() {
         const userId = req.params.id ;
         const query = {_id : new ObjectId(userId)} ;
         const result = await townMartProductCollction.findOne(query) ;
+        res.send(result) ;
+    })
+
+    //****************************** Bids Related APis **********************************************/
+
+    //-------------------------Simple APi to get All the bids------------------------
+    app.get('/bids',async(req,res)=>{
+        const email = req.query.email ;
+        // console.log(email) ;
+        const query = {} ;
+        if(email){
+            query.buyer_email = email ;
+        }
+        const cursor = bidsCollection.find(query) ;
+        const result =await cursor.toArray() ;
+        res.send(result) ;
+    })
+
+    //---------------------------Simple Api to Post Bids------------------------------
+    app.post('/bids',async(req,res)=>{
+        const newBid = req.body ;
+        const result =await bidsCollection.insertOne(newBid) ;
+        res.send(result) ;
+    }) 
+
+    //-----------------------Simple APi to Delete Bids---------------------------------
+    app.delete('/bids/:id',async(req,res)=>{
+        const bidId = req.params.id ;
+        const query = {_id : new ObjectId(bidId)} ;
+        const result =await bidsCollection.deleteOne(query) ;
+        res.send(result) ;
+    })
+
+    //-----------------------Simple Api to get 1 Bid-----------------------------
+    app.get('/bids/:id' , async(req,res)=>{
+        const bidId = req.params.id ;
+        const query = {_id : new ObjectId(bidId)} ;
+        const result =await bidsCollection.findOne(query) ;
         res.send(result) ;
     })
 
