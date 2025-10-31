@@ -51,6 +51,19 @@ async function run() {
         res.send(result) ;
     })
 
+    //-------------------------Simple Api to Update Product--------------------------
+    app.patch('/product/:id',async(req,res)=>{
+        const userId = req.params.id ;
+        const currentProduct = req.body ;
+        const query = {_id : new ObjectId(userId)} ;
+        const update = {
+            $set : currentProduct ,
+        }
+        const option = {} ;
+        const result = await townMartProductCollction.updateOne(query,update,option) ;
+        res.send(result) ;
+    })
+
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
