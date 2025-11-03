@@ -36,6 +36,7 @@ async function run() {
     const dataBase = client.db("TownMart") ;
     const townMartProductCollction = dataBase.collection("product") ;
     const bidsCollection = dataBase.collection("bids") ;
+    const userCollection = dataBase.collection("users") ;
 
 
     //****************************** Product Related APis **********************************************/
@@ -88,6 +89,7 @@ async function run() {
         res.send(result) ;
     })
 
+
     //****************************** Bids Related APis **********************************************/
 
     //-------------------------Simple APi to get All the bids------------------------
@@ -123,6 +125,31 @@ async function run() {
         const bidId = req.params.id ;
         const query = {_id : new ObjectId(bidId)} ;
         const result =await bidsCollection.findOne(query) ;
+        res.send(result) ;
+    })
+
+
+    //*********************************** User Related Apis*********************************************** */
+
+    //---------------------------Post/Create a New User--------------------------------------------
+    app.post('/user',async (req,res)=>{
+        const user = req.body ;
+        const email = req.body.email ;
+
+        const query = {email : email} ;
+        const existingEmail = await userCollection.findOne(query) ;
+        if(existingEmail){
+            res.send("User already Exist ! ") ;
+        }else{
+            const result =await userCollection.insertOne(user) ;
+            res.send(result) ;
+        }
+    })
+    
+    //---------------------------Get all User--------------------------------------------
+    app.get('/user',async(req,res)=>{
+        const cursor = await userCollection.find() ;
+        const result = await cursor.toArray() ;
         res.send(result) ;
     })
 
