@@ -81,6 +81,16 @@ async function run() {
         res.send(result) ;
     })
 
+    //-----------------------------Recent Product APi--------------------------------------
+    app.get('/recentproduct',async (req,res)=>{
+        const query = {} ;
+        const totalLimit = 6 
+        const sortType = {created_at : -1}
+        const cursor =await townMartProductCollction.find(query).sort(sortType).limit(totalLimit) ;
+        const result =await cursor.toArray() ;
+        res.send(result) ;
+    })
+
     //---------------------------Simple APi to get Single Product By ID--------------------
     app.get('/product/:id',async(req,res)=>{
         const userId = req.params.id ;
