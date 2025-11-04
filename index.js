@@ -138,6 +138,14 @@ async function run() {
         res.send(result) ;
     })
 
+    //--------------------------Get all the bid for a product------------------------------
+    app.get('/product/bid/:id',async(req,res)=>{
+        const productId = req.params.id ;
+        const query = {product : productId} ;
+        const cursor =await bidsCollection.find(query)
+        const result =await cursor.toArray() ;
+        res.send(result) ;
+    })
 
     //*********************************** User Related Apis*********************************************** */
 
