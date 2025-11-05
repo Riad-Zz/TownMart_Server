@@ -147,6 +147,15 @@ async function run() {
         res.send(result) ;
     })
 
+    //------------------------------Api to get All the bid for a Product------------------------------
+    app.get('/product/bid/:id',async(req,res)=>{
+        const productID = req.params.id ;
+        const query = {product : productID} ;
+        const cursor = bidsCollection.find(query) ;
+        const result = cursor.toArray() ;
+        res.send(result) ;
+    })
+
     //*********************************** User Related Apis*********************************************** */
 
     //---------------------------Post/Create a New User--------------------------------------------
