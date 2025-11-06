@@ -3,13 +3,14 @@ const admin = require("firebase-admin");
 const cors = require("cors");
 require("dotenv").config();
 
-const serviceAccount = require("./TownMart_Admin_Key.json");
+const decoded = Buffer.from(process.env.FIREBASE_KEY, "base64").toString(
+  "utf8"
+);
+const serviceAccount = JSON.parse(decoded);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
-
-
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
@@ -22,8 +23,7 @@ app.use(express.json());
 
 //-------Test middleWire----------------------
 
-
-const fireBaseTokenVarify =async (req, res, next) => {
+const fireBaseTokenVarify = async (req, res, next) => {
   // console.log('my token : ', req.headers.authorization) ;
   if (!req.headers.authorization) {
     //Not authozired
@@ -34,16 +34,15 @@ const fireBaseTokenVarify =async (req, res, next) => {
     return res.status(401).send({ message: "Unauthorize Access ! " });
   }
 
-  try{
+  try {
     const userInfo = await admin.auth().verifyIdToken(token);
     // console.log(userInfo) ;
-    req.token_email = userInfo.email 
-    next() ;
-  }
-  catch{
+    req.token_email = userInfo.email;
+    next();
+  } catch {
     return res.status(401).send({ message: "Unauthorize Access ! " });
   }
-//   console.log("Final Token : ", token);
+  //   console.log("Final Token : ", token);
 };
 
 //----------------Test APi--------------------------------------
@@ -141,18 +140,18 @@ async function run() {
     //****************************** Bids Related APis **********************************************/
 
     //-------------------------Simple APi to get All the bids------------------------
-    app.get("/bids",fireBaseTokenVarify, async (req, res) => {
+    app.get("/bids", fireBaseTokenVarify, async (req, res) => {
       const email = req.query.email;
       const token = req.headers;
-      const tokenEmail = req.token_email ;
+      const tokenEmail = req.token_email;
 
-    //   console.log(tokenEmail) ;
+      //   console.log(tokenEmail) ;
       // console.log(token) ;
       // console.log(email) ;
       const query = {};
       if (email) {
-        if(email != tokenEmail){
-            return  res.status(403).send({ message: "Forbidden Access ! " });
+        if (email != tokenEmail) {
+          return res.status(403).send({ message: "Forbidden Access ! " });
         }
         query.buyer_email = email;
       }
@@ -226,7 +225,7 @@ async function run() {
       res.send(result);
     });
 
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );

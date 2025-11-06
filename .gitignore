@@ -1,3 +1,4 @@
 node_modules
 .env
 TownMart_Admin_Key.json
+.vercel
